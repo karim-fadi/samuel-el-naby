@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saint James</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- 
+      - google font link
+    -->
+      
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nerko+One&display=swap" rel="stylesheet">
+
+    <style>
+        .main-content {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: calc(100vh - 20px);
+            width: 100%;
+            max-width: 100vw;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="background-image" style="background-image: url('background.jpeg');"></div>
+
+    <div class="main-content">
+        <div class="container">
+            
+            <div class="student-details">
+                <img id="student-image" alt="Student Image">
+                <h1 id="student-name"></h1>
+                <p id="student-score"></p>
+
+                <div class="score-controls">
+                    <div class="score-buttons" id="add-buttons"></div>
+                    <div class="score-buttons" id="subtract-buttons"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js';
+        import { getFirestore, getDoc, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCo9k2OLVQprNoCFEjEAHVInOcvS7NlUvo",
+            authDomain: "abrar-100.firebaseapp.com",
+            projectId: "abrar-100",
+            storageBucket: "abrar-100.appspot.com",
+            messagingSenderId: "1031124601739",
+            appId: "1:1031124601739:web:0fbbf88a38d32ffae47d8e",
+            measurementId: "G-YCSYCQ6DV2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        function getStudentId() {
+            const params = new URLSearchParams(window.location.search);
+            return decodeURIComponent(params.get('id'));
+        }
+
+        async function fetchStudentDetails(studentId) {
+            try {
+                const studentDocRef = doc(db, 'saint-james', studentId);
+                const studentDoc = await getDoc(studentDocRef);
+
+                if (studentDoc.exists()) {
+                    const studentData = studentDoc.data();
+                    document.getElementById('student-name').textContent = studentId;
+                    document.getElementById('student-score').textContent = `Score: ${studentData.score}`;
+                    document.getElementById('student-image').src = `images/${studentId}.jpeg`;
+
+                    setupScoreButtons(studentId, studentData.score);
+                } else {
+                    console.log('No such student!');
+                }
+            } catch (error) {
+                console.error('Error fetching student details:', error);
+            }
+        }
+
+        function setupScoreButtons(studentId, currentScore) {
+            const pointOptions = [1, 3, 5];
+            const addContainer = document.getElementById('add-buttons');
+            const subtractContainer = document.getElementById('subtract-buttons');
+
+            addContainer.innerHTML = '';
+            subtractContainer.innerHTML = '';
+
+            pointOptions.forEach(points => {
+                const addBtn = document.createElement('button');
+                addBtn.textContent = `+${points}`;
+                addBtn.classList.add('score-button');
+                addBtn.addEventListener('click', () => updateScore(studentId, currentScore += points));
+
+                const subtractBtn = document.createElement('button');
+                subtractBtn.textContent = `-${points}`;
+                subtractBtn.classList.add('score-button', 'minus');
+                subtractBtn.addEventListener('click', () => updateScore(studentId, currentScore -= points));
+
+                addContainer.appendChild(addBtn);
+                subtractContainer.appendChild(subtractBtn);
+            });
+        }
+
+        async function updateScore(studentId, newScore) {
+            try {
+                const studentDocRef = doc(db, 'saint-james', studentId);
+                await updateDoc(studentDocRef, { score: newScore });
+                document.getElementById('student-score').textContent = `Score: ${newScore}`;
+            } catch (error) {
+                console.error('Error updating score:', error);
+            }
+        }
+
+        const studentId = getStudentId();
+        if (studentId) {
+            fetchStudentDetails(studentId);
+        } else {
+            console.error('No student ID provided in the URL');
+        }
+    </script>
+
+</body>
+
+</html>

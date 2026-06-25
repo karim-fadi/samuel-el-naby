@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saint James</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- 
+      - google font link
+    -->
+      
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nerko+One&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="background-image" style="background-image: url('background.jpeg');"></div>
+
+
+    <div class="container">
+        <div class="tree-container" id="tree-container"></div>
+        
+        <div class="student-details">
+            <img id="student-image" alt="Student Image">
+            <h1 id="student-name"></h1>
+            <p id="student-score"></p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js';
+        import { getFirestore, getDoc, doc } from 'https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+                apiKey: "AIzaSyCo9k2OLVQprNoCFEjEAHVInOcvS7NlUvo",
+                authDomain: "abrar-100.firebaseapp.com",
+                projectId: "abrar-100",
+                storageBucket: "abrar-100.appspot.com",
+                messagingSenderId: "1031124601739",
+                appId: "1:1031124601739:web:0fbbf88a38d32ffae47d8e",
+                measurementId: "G-YCSYCQ6DV2"
+            };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        function getStudentId() {
+            const params = new URLSearchParams(window.location.search);
+            return decodeURIComponent(params.get('id'));
+        }
+
+
+        async function fetchStudentDetails(studentId) {
+            try {
+                const studentDocRef = doc(db, 'saint-james', studentId);
+                const studentDoc = await getDoc(studentDocRef);
+
+                console.log(studentId);
+
+                if (studentDoc.exists()) {
+                    const studentData = studentDoc.data();
+                    document.getElementById('student-name').textContent = studentId;
+                    document.getElementById('student-score').textContent = `Score: ${studentData.score}`;
+                    document.getElementById('student-image').src = `images/${studentId}.jpeg`;
+
+                } else {
+                    console.log('No such student!');
+                }
+            } catch (error) {
+                console.error('Error fetching student details:', error);
+            }
+        }
+
+        const studentId = getStudentId();
+        if (studentId) {
+            fetchStudentDetails(studentId);
+        } else {
+            console.error('No student ID provided in the URL');
+        }
+    </script>
+</body>
+
+</html>

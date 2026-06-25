@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Saint James</title>
+
+    <!-- 
+      - google font link
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nerko+One&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh; 
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; 
+            font-family: 'Urbanist', sans-serif;
+        }
+
+        .background-image {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            width: 100%;
+            height: 100vh;
+            position: fixed;
+            z-index: -1; 
+            top: 0;
+            left: 0;
+        }
+
+        .main-content {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: center;
+            height: calc(100vh - 20px);
+            width: 100%;
+            max-width: 100vw;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: clamp(2rem, 4vw, 8rem);
+            color: white;
+            font-weight: 500;
+            font-family: 'Lilita One', sans-serif;
+            margin-bottom: 30px;
+        }
+
+        #student-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+            width: 100%;
+            max-width: 100vw; 
+            box-sizing: border-box;
+            max-height: 80vh; 
+        }
+
+        #student-list::after {
+            content: '';
+            display: block;
+            height: 20px; 
+        }
+
+        .student-item {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin: 10px auto;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 900px;
+            box-sizing: border-box;
+            white-space: nowrap; 
+            position: relative;
+            transform: translateY(-20px);
+            opacity: 0;
+            animation: reveal 0.5s forwards;
+            transition: all 0.4s ease;
+        }
+
+        @keyframes reveal {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .student-item.expanded {
+            margin-bottom: 20px;
+        }
+
+        .student-item img {
+            border-radius: 50%;
+            width: 60px; 
+            height: 60px; 
+            margin-right: 15px; 
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            flex-grow: 1; 
+            overflow: hidden; 
+            min-width: 0; 
+        }
+
+        .student-name {
+            font-size: 1.1em; 
+            font-weight: 600;
+            color: #333;
+            margin-right: 10px; 
+            white-space: nowrap; 
+        }
+
+        .student-score {
+            font-size: 1.1em; 
+            color: #4682B4;
+            white-space: nowrap; 
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .expand-arrow {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #333;
+            margin-left: 10px;
+            transition: transform 0.4s ease;
+        }
+
+        .expand-arrow:active {
+            transform: scale(0.9);
+        }
+
+        .extra-info {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.4s ease;
+            opacity: 0;
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .extra-info.show {
+            max-height: 200px;
+            opacity: 1;
+        }
+
+        .points-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 8px;
+            margin-right: 10px;
+        }
+
+        .points-dropdown {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            background-color: white;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .points-dropdown:focus {
+            border-color: #4682B4;
+        }
+
+        .circle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.4em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            outline: none;
+        }
+
+        .green-circle {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .red-circle {
+            background-color: #F44336;
+            color: white;
+        }
+
+        .circle:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .circle:active {
+            transform: scale(0.9);
+        }
+
+        @media (max-width: 768px) {
+            .points-controls {
+                flex-direction: column;
+                gap: 8px;
+                padding: 8px;
+            }
+            
+            .circle {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2em;
+            }
+            
+            .points-dropdown {
+                padding: 6px 10px;
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .points-controls {
+                gap: 5px;
+                padding: 6px;
+            }
+            
+            .circle {
+                width: 35px;
+                height: 35px;
+                font-size: 1.1em;
+            }
+            
+            .points-dropdown {
+                padding: 5px 8px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="background-image" style="background-image: url('background.jpeg');"></div>
+    <div class="main-content">
+        <h1>Saint James</h1>
+
+        <ul id="student-list"></ul>
+
+        <script type="module">
+            import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js';
+            import { getFirestore, getDocs, collection, doc, setDoc, updateDoc, getDoc} from 'https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js';
+
+            const firebaseConfig = {
+                apiKey: "AIzaSyCo9k2OLVQprNoCFEjEAHVInOcvS7NlUvo",
+                authDomain: "abrar-100.firebaseapp.com",
+                projectId: "abrar-100",
+                storageBucket: "abrar-100.appspot.com",
+                messagingSenderId: "1031124601739",
+                appId: "1:1031124601739:web:0fbbf88a38d32ffae47d8e",
+                measurementId: "G-YCSYCQ6DV2"
+            };
+
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+
+            const studentList = document.getElementById('student-list');
+
+            async function fetchStudents() {
+                try {
+                    const studentCollectionRef = collection(db, 'saint-james');
+                    const querySnapshot = await getDocs(studentCollectionRef);
+
+                    const students = querySnapshot.docs.map(doc => ({
+                        name: doc.id,
+                        score: doc.data().score,
+                    })).sort((a, b) => b.score - a.score);
+
+                    students.forEach((student, index) => {
+                        const rank = index + 1;
+
+                        const studentItem = document.createElement('li');
+                        studentItem.classList.add('student-item');
+                        studentItem.classList.add('reveal');
+
+                        const studentInfo = document.createElement('div');
+                        studentInfo.classList.add('student-info');
+
+                        const studentImg = document.createElement('img');
+                        studentImg.src = `images/${student.name}.jpeg`;
+                        studentImg.alt = student.name;
+
+                        const studentNameElem = document.createElement('span');
+                        studentNameElem.classList.add('student-name');
+                        studentNameElem.textContent = `${rank}. ${student.name}`;
+
+                        const expandButton = document.createElement('button');
+                        expandButton.classList.add('expand-arrow');
+                        expandButton.textContent = '▼';
+                        expandButton.addEventListener('click', () => {
+                            extraInfo.classList.toggle('show');
+                            expandButton.textContent = extraInfo.classList.contains('show') ? '▲' : '▼';
+                            studentItem.classList.toggle('expanded');
+                        });
+
+                        const extraInfo = document.createElement('div');
+                        extraInfo.classList.add('extra-info');
+
+                        // Create points controls container
+                        const pointsControls = document.createElement('div');
+                        pointsControls.classList.add('points-controls');
+
+                        // Create dropdown for point selection
+                        const pointsDropdown = document.createElement('select');
+                        pointsDropdown.classList.add('points-dropdown');
+                        
+                        const pointOptions = [1, 3, 5];
+                        pointOptions.forEach(value => {
+                            const option = document.createElement('option');
+                            option.value = value;
+                            option.textContent = value;
+                            if (value === 5) option.selected = true; // Default to 5
+                            pointsDropdown.appendChild(option);
+                        });
+
+                        // Create plus button
+                        const plusButton = document.createElement('button');
+                        plusButton.classList.add('circle', 'green-circle');
+                        plusButton.textContent = '+';
+
+                        // Create minus button
+                        const minusButton = document.createElement('button');
+                        minusButton.classList.add('circle', 'red-circle');
+                        minusButton.textContent = '-';
+
+                        // Add event listeners
+                        plusButton.addEventListener('click', async () => {
+                            const points = parseInt(pointsDropdown.value);
+                            student.score += points;
+                            await updateDoc(doc(db, 'saint-james', student.name), { score: student.score });
+                            studentScoreElem.textContent = student.score;
+                        });
+
+                        minusButton.addEventListener('click', async () => {
+                            const points = parseInt(pointsDropdown.value);
+                            student.score -= points;
+                            await updateDoc(doc(db, 'saint-james', student.name), { score: student.score });
+                            studentScoreElem.textContent = student.score;
+                        });
+
+                        // Assemble the controls
+                        pointsControls.appendChild(minusButton);
+                        pointsControls.appendChild(pointsDropdown);
+                        pointsControls.appendChild(plusButton);
+                        
+                        extraInfo.appendChild(pointsControls);
+
+                        studentInfo.appendChild(studentImg);
+                        studentInfo.appendChild(studentNameElem);
+
+                        const studentScoreElem = document.createElement('span');
+                        studentScoreElem.classList.add('student-score');
+                        studentScoreElem.textContent = student.score;
+
+                        studentItem.appendChild(expandButton);
+                        studentItem.appendChild(studentInfo);
+                        studentItem.appendChild(extraInfo);
+                        studentItem.appendChild(studentScoreElem);
+
+                        studentList.appendChild(studentItem);
+
+                        studentItem.style.animationDelay = `${index * 0.2}s`;
+                    });
+                } catch (error) {
+                    console.error('Error fetching students: ', error);
+                }
+            }
+
+            window.onload = function() {
+                const password = prompt("Enter the password to access the page:");
+                const correctPassword = "jamesss";
+
+                if (password === correctPassword) {
+                    document.querySelector('.main-content').style.display = 'flex';
+                    fetchStudents();
+                } else {
+                    alert("Incorrect password. You cannot access the page.");
+                    document.body.innerHTML = "";
+                }
+            };
+
+        </script>
+
+    </div>
+
+</body>
+
+</html>
