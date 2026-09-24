@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Saint James</title>
+    <title>Samuel El Naby</title>
 
     <!-- 
       - google font link
@@ -274,7 +274,7 @@
 <body>
     <div class="background-image" style="background-image: url('background.jpeg');"></div>
     <div class="main-content">
-        <h1>Saint James</h1>
+        <h1>Samuel El Naby</h1>
 
         <ul id="student-list"></ul>
 
@@ -299,7 +299,7 @@
 
             async function fetchStudents() {
                 try {
-                    const studentCollectionRef = collection(db, 'saint-james');
+                    const studentCollectionRef = collection(db, 'samuel-el-naby');
                     const querySnapshot = await getDocs(studentCollectionRef);
 
                     const students = querySnapshot.docs.map(doc => ({
@@ -368,14 +368,14 @@
                         plusButton.addEventListener('click', async () => {
                             const points = parseInt(pointsDropdown.value);
                             student.score += points;
-                            await updateDoc(doc(db, 'saint-james', student.name), { score: student.score });
+                            await updateDoc(doc(db, 'samuel-el-naby', student.name), { score: student.score });
                             studentScoreElem.textContent = student.score;
                         });
 
                         minusButton.addEventListener('click', async () => {
                             const points = parseInt(pointsDropdown.value);
                             student.score -= points;
-                            await updateDoc(doc(db, 'saint-james', student.name), { score: student.score });
+                            await updateDoc(doc(db, 'samuel-el-naby', student.name), { score: student.score });
                             studentScoreElem.textContent = student.score;
                         });
 
@@ -409,7 +409,7 @@
 
             window.onload = function() {
                 const password = prompt("Enter the password to access the page:");
-                const correctPassword = "jamesss";
+                const correctPassword = "samuelll";
 
                 if (password === correctPassword) {
                     document.querySelector('.main-content').style.display = 'flex';

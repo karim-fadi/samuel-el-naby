@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saint James</title>
+    <title>Samuel El Naby</title>
     <link rel="stylesheet" href="style.css">
 
     <!-- 
@@ -75,7 +75,7 @@
 
         async function fetchStudentDetails(studentId) {
             try {
-                const studentDocRef = doc(db, 'saint-james', studentId);
+                const studentDocRef = doc(db, 'samuel-el-naby', studentId);
                 const studentDoc = await getDoc(studentDocRef);
 
                 if (studentDoc.exists()) {
@@ -119,7 +119,7 @@
 
         async function updateScore(studentId, newScore) {
             try {
-                const studentDocRef = doc(db, 'saint-james', studentId);
+                const studentDocRef = doc(db, 'samuel-el-naby', studentId);
                 await updateDoc(studentDocRef, { score: newScore });
                 document.getElementById('student-score').textContent = `Score: ${newScore}`;
             } catch (error) {
